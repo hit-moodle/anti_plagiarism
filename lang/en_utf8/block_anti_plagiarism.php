@@ -1,6 +1,6 @@
 <?PHP // $Id$ 
 
-$string['blockname'] = 'Moss';
+$string['blockname'] = 'Anti-Plagiarism';
 $string['failed'] = 'Unsuccessfully run the moss script!';
 $string['noassignments'] = 'No assignments to be measured';
 $string['nosubmitted'] = 'Nobody has submitted the assignment to moss server.';

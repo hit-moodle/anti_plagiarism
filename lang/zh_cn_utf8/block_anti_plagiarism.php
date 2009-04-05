@@ -1,6 +1,6 @@
 <?PHP // $Id$ 
 
-$string['blockname'] = 'Moss';
+$string['blockname'] = '反抄袭';
 $string['failed'] = 'Moss脚本运行失败！';
 $string['noassignments'] = '没有可被评判的作业';
 $string['nosubmitted'] = '还没有人把此作业提交到Moss。';
