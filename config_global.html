@@ -2,12 +2,21 @@
 
 <table cellpadding="9" cellspacing="0">
 <tr>
+    <td align="right"><p>block_antipla_duplication_path:</td>
+    <td>
+    <input name="block_antipla_duplication_path" type="text" value="<?php if(!empty($CFG->block_antipla_duplication_path)) {echo $CFG->block_antipla_duplication_path;}?>" />
+    </td>
+    <td>
+    <?php print_string('duplicationpath','block_anti_plagiarism');?>    
+    </td>
+</tr>
+<tr>
     <td align="right"><p>block_antipla_moss_script_path:</td>
     <td>
     <input name="block_antipla_moss_script_path" type="text" value="<?php if(!empty($CFG->block_antipla_moss_script_path)) {echo $CFG->block_antipla_moss_script_path;}?>" />
     </td>
     <td>
-    <?php print_string('scriptpath','block_anti_plagiarism');?>    
+    <?php print_string('mossscriptpath','block_anti_plagiarism');?>    
     </td>
 </tr>
 <tr>
