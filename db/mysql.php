@@ -18,7 +18,7 @@
 //
 // This file is tailored to MySQL
 
-function moss_upgrade($oldversion=0) {
+function anti_plagiarism_upgrade($oldversion=0) {
 
     global $CFG;
     

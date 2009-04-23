@@ -33,18 +33,19 @@
 
 $block_anti_plagiarism_capabilities = array(
 
-    'block_anti_plagiarism:view' => array(
+    'block/block_anti_plagiarism:view' => array(
 
         'captype' => 'read',
         'contextlevel' => CONTEXT_BLOCK,
         'legacy' => array(
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'admin' => CAP_ALLOW
+            'admin' => CAP_ALLOW,
+            'student' => CAP_ALLOW
         )
     ),
 
-    'block_anti_plagiarism:judge' => array(
+    'block/block_anti_plagiarism:judge' => array(
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',
