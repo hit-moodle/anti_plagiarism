@@ -8,6 +8,7 @@ $string['resubmit'] = '再次提交到moss';
 $string['resulttitle'] = '软件雷同度评判';
 $string['submit'] = '提交到moss';
 $string['chooselang'] = '选择程序设计语言：';
-$string['scriptpath'] = '<a href=http://moss.stanford.edu/general/scripts.html>moss提交脚本</a>的本地路径。';
+$string['mossscriptpath'] = '<a href=http://theory.stanford.edu/~aiken/moss/>moss</a>提交脚本的本地路径。';
+$string['duplicationpath'] = 'Duplication的本地路径。';
 
 ?>

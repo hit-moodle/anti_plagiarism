@@ -8,6 +8,7 @@ $string['resubmit'] = 'Submit to moss again';
 $string['resulttitle'] = 'Measure Of Software Similarity';
 $string['submit'] = 'Submit to moss';
 $string['chooselang'] = 'Choose the programming language:';
-$string['scriptpath'] = 'The local path where the <a href=http://moss.stanford.edu/general/scripts.html>moss submission script</a> is in.';
+$string['mossscriptpath'] = 'Local path of the <a href=http://theory.stanford.edu/~aiken/moss/>moss</a> submission script.';
+$string['duplicationpath'] = 'Local path of the Duplication.';
 
 ?>
