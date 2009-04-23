@@ -82,9 +82,9 @@ class block_anti_plagiarism extends block_list {
         }
         else {
             foreach ($assignments as $assignment) {
-                if (strcmp($assignment->assignmenttype, 'uploadsingle') != 0 && strcmp($assignment->assignmenttype, 'uploadpe') != 0 && strcmp($assignment->assignmenttype, 'upload') != 0) {
-                    continue;
-                }
+//                if (strcmp($assignment->assignmenttype, 'uploadsingle') != 0 && strcmp($assignment->assignmenttype, 'uploadpe') != 0 && strcmp($assignment->assignmenttype, 'upload') != 0) {
+//                    continue;
+//                }
 
                 if (!$assignment->visible) {
                     //Show dimmed if the mod is hidden
