@@ -49,7 +49,7 @@ class block_anti_plagiarism extends block_list {
 
     function get_content() {
         // We intend to use the $CFG global variable
-        global $CFG;
+        global $CFG, $USER;
 
         // This prevents your block from recalculating its content more than once before the page
         // is displayed to the user. Unless you KNOW that there is a VERY SPECIFIC reason not to do
@@ -58,6 +58,18 @@ class block_anti_plagiarism extends block_list {
         if($this->content !== NULL) {
             return $this->content;
         }
+
+        if (empty($this->instance->pinned)) {
+            $context = get_context_instance(CONTEXT_BLOCK, $this->instance->id);
+        } else {
+            $context = get_context_instance(CONTEXT_SYSTEM); // pinned blocks do not have own context
+        }
+        
+        $viewall = has_capability('block/anti_plagiarism:viewall', $context);
+        $viewself = has_capability('block/anti_plagiarism:viewself', $context);
+
+        if (!$viewall && !$viewself)    //Should not see the block
+            return null;
 
         // This is standard; you initialize your block's content.
         $this->content = &New stdClass;
@@ -74,37 +86,46 @@ class block_anti_plagiarism extends block_list {
         $this->content->items = array(); // this is the text for each item
         $this->content->icons = array(); // this is the icon for each item
 
-        if (! $assignments = get_all_instances_in_course("assignment", $this->course)) {
-            $this->content->footer = get_string('noassignments', 'assignment');
-        }
-        else {
-            foreach ($assignments as $assignment) {
-//                if (strcmp($assignment->assignmenttype, 'uploadsingle') != 0 && strcmp($assignment->assignmenttype, 'uploadpe') != 0 && strcmp($assignment->assignmenttype, 'upload') != 0) {
-//                    continue;
-//                }
-
-                if ($assignment->visible) {
-                    //Show normal if the mod is visible
-                    $this->content->icons[] = '<img src="'.$CFG->modpixpath.'/assignment/icon.gif"></img>';
-                    $this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$assignment->id.'&block='.$this->instance->id.'">'.format_string($assignment->name,true).'</a>';
-                } else {
-                    //Show dimmed if the mod is hidden
-                    $this->content->icons[] = '<img src="'.$CFG->modpixpath.'/assignment/icon.gif"></img>';
-                    $this->content->items[] = '<a class ="dimmed" href="'.$CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$assignment->id.'&block='.$this->instance->id.'">'.format_string($assignment->name,true).'</a>';
-                }   
+        if ($viewall) {
+            $assignments = get_all_instances_in_course("assignment", $this->course);
+            if (!$assignments)
+                $assignments = array();
+        } else { //viewself
+            $select = "(user1=$USER->id OR user2=$USER->id) AND confirmed=1";
+            $rows = get_records_select('block_anti_plagiarism_pairs', $select);
+            $assignments = array();
+            if ($rows) {
+                $apids = array();
+                foreach ($rows as $row) {
+                    if (in_array($row->apid, $apids))
+                        continue;
+                    $apids[] = $row->apid;
+                    $ap = get_record('block_anti_plagiarism', 'id', $row->apid);
+                    $assignments[] = get_record('assignment', 'id', $ap->assignment);
+                }
             }
         }
-                    
-        
-        //$this->content->items[]='<a href="'.$CFG->wwwroot.'/course/student.php?id='.$this->course->id.'">Students...</a>';
-        //$this->content->icons[]='<img src="'.$CFG->pixpath.'/i/users.gif" alt="" />';
-        // You can add as many choices as you want with the above syntax.
 
+        foreach ($assignments as $assignment) {
+
+            //if ($assignment->visible) {
+            if (instance_is_visible('assignment', $assignment)) {
+                //Show normal if the mod is visible
+                $this->content->icons[] = '<img src="'.$CFG->modpixpath.'/assignment/icon.gif"></img>';
+                $this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$assignment->id.'&block='.$this->instance->id.'">'.format_string($assignment->name,true).'</a>';
+            } else {
+                //Show dimmed if the mod is hidden
+                $this->content->icons[] = '<img src="'.$CFG->modpixpath.'/assignment/icon.gif"></img>';
+                $this->content->items[] = '<a class ="dimmed" href="'.$CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$assignment->id.'&block='.$this->instance->id.'">'.format_string($assignment->name,true).'</a>';
+            }   
+        }
 
         // If you like, you can specify a "footer" text that will be printed at the bottom of your block.
         // If you don't want a footer, set this variable to an empty string. DO NOT delete the line entirely!
-        if (empty($this->content->footer)) {
-            $this->content->footer = '';
+        if (count($this->content->items)) {
+            $this->content->footer = $viewall ? '' : get_string('hasplagiarism', 'block_anti_plagiarism');
+        } else {
+            $this->content->footer = $viewall ? get_string('noassignments', 'assignment') : get_string('noplagiarism', 'block_anti_plagiarism');
         }
         // And that's all! :)
         return $this->content;

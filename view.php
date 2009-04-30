@@ -26,7 +26,9 @@ print_header($pagetitle, $course->fullname, $navigation, "", "", true, '', navme
 
 $context = get_context_instance(CONTEXT_BLOCK, $block);
 
-require_capability('block/block_anti_plagiarism:view', $context);
+$viewall = has_capability('block/anti_plagiarism:viewall', $context);
+if (!$viewall)
+    require_capability('block/anti_plagiarism:viewself', $context);
 
 $antipla = get_record('block_anti_plagiarism', 'assignment', $id);
 $inactive = null;
@@ -39,7 +41,7 @@ $viewurl = 'view.php?id='.$id.'&block='.$block.'&action=view';
 $configurl = 'view.php?id='.$id.'&block='.$block.'&action=config';
 
 $row[] = new tabobject('view', $viewurl, get_string('view'));
-if (has_capability('block/block_anti_plagiarism:config', $context)) 
+if (has_capability('block/anti_plagiarism:judge', $context)) 
     $row[] = new tabobject('config', $configurl, get_string('judge', 'block_anti_plagiarism'));
 $tabs[] = $row;
 
@@ -49,7 +51,7 @@ print_tabs($tabs, $action, $inactive);
 print '</div>';
 
 if ($action === 'config') {
-    require_capability('block/block_anti_plagiarism:config', $context);
+    require_capability('block/anti_plagiarism:judge', $context);
 
     require_once('config_form.php');
 
@@ -82,17 +84,25 @@ if ($action === 'config') {
     
     $pairid = optional_param('pairid', '-1', PARAM_INT);
     if ($pairid != -1) {
+        require_capability('block/anti_plagiarism:confirm', $context);
         $new = new Object();
         $new->confirmed = required_param('confirmed', PARAM_INT);
         $new->id = $pairid;
         update_record('block_anti_plagiarism_pairs', $new);
     }
 
-    $results = get_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'rank');
+    if ($viewall)
+        $results = get_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'rank');
+    else {
+        $select = "apid=$antipla->id AND (user1=$USER->id OR user2=$USER->id) AND confirmed=1";
+        $results = get_records_select('block_anti_plagiarism_pairs', $select, 'rank');
+    }
 
     if (!$results) {
         notice(get_string('noresults', 'block_anti_plagiarism'), $CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$id.'&block='.$block.'&action=config');
     }
+
+    $confirm = has_capability('block/anti_plagiarism:confirm', $context);
 
     $table = new Object();
     $table->class = 'flexible antipla';
@@ -104,14 +114,15 @@ if ($action === 'config') {
     $column_name[] = get_string('rank', 'block_anti_plagiarism');
     $column_name[] = get_string('extnames', 'block_anti_plagiarism');
     $column_name[] = get_string('info', 'block_anti_plagiarism');
-    $column_name[] = get_string('confirm');
+    if ($confirm)
+        $column_name[] = get_string('confirm');
 
     $table->data[] = $column_name;
 
     foreach($results as $result) {
         $column = array();
 
-        if ($result->confirmed) {
+        if ($confirm && $result->confirmed) {
             $grade_button1 = link_to_popup_window('/mod/assignment/submissions.php?a='.$id.'&amp;userid='.$result->user1.'&amp;mode=single&amp;offset=1', 
                 'grade'.$result->user1, 
                 '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />', 
@@ -146,10 +157,11 @@ if ($action === 'config') {
         $column[] = $result->judger === 'moss' ? $result->extnames : '.doc .pdf';
         $column[] = $result->info;
 
-        $column[] = print_single_button(
-            $CFG->wwwroot.'/blocks/anti_plagiarism/view.php',
-            array('id' => $id, 'block' => $block, 'pairid' => $result->id, 'confirmed' => !$result->confirmed),
-            $label, 'post', '_self', true, $tooltip, false, $jsconfirmmessage);
+        if ($confirm) {
+            $column[] = print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php',
+                                            array('id' => $id, 'block' => $block, 'pairid' => $result->id, 'confirmed' => !$result->confirmed),
+                                            $label, 'post', '_self', true, $tooltip, false, $jsconfirmmessage);
+        }
 
         $table->data[] = $column;
     }

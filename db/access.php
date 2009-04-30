@@ -33,7 +33,7 @@
 
 $block_anti_plagiarism_capabilities = array(
 
-    'block/block_anti_plagiarism:viewself' => array(
+    'block/anti_plagiarism:viewself' => array(
 
         'captype' => 'read',
         'contextlevel' => CONTEXT_BLOCK,
@@ -45,7 +45,7 @@ $block_anti_plagiarism_capabilities = array(
         )
     ),
 
-    'block/block_anti_plagiarism:viewall' => array(
+    'block/anti_plagiarism:viewall' => array(
 
         'captype' => 'read',
         'contextlevel' => CONTEXT_BLOCK,
@@ -56,25 +56,23 @@ $block_anti_plagiarism_capabilities = array(
         )
     ),
 
-    'block/block_anti_plagiarism:config' => array(
+    'block/anti_plagiarism:judge' => array(
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
         'legacy' => array(
-            'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'admin' => CAP_ALLOW
         )
     ),
 
-    'block/block_anti_plagiarism:confirm' => array(
+    'block/anti_plagiarism:confirm' => array(
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',
         'contextlevel' => CONTEXT_BLOCK,
         'legacy' => array(
-            'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
             'admin' => CAP_ALLOW
         )
