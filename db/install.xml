@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="blocks/anti_plagiarism/db" VERSION="20090423" COMMENT="XMLDB file for Moodle blocks/anti_plagiarism"
+<XMLDB PATH="blocks/anti_plagiarism/db" VERSION="20090430" COMMENT="XMLDB file for Moodle blocks/anti_plagiarism"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -11,8 +11,7 @@
         <FIELD NAME="judger" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="moss" SEQUENCE="false" ENUM="true" ENUMVALUES="'moss', 'duplication'" PREVIOUS="assignment" NEXT="extnames"/>
         <FIELD NAME="extnames" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="judger" NEXT="type"/>
         <FIELD NAME="type" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="c" SEQUENCE="false" ENUM="false" PREVIOUS="extnames" NEXT="sensitivity"/>
-        <FIELD NAME="sensitivity" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="type" NEXT="judgedate"/>
-        <FIELD NAME="judgedate" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="sensitivity"/>
+        <FIELD NAME="sensitivity" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="type"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -27,16 +26,19 @@
         <FIELD NAME="apid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="id" NEXT="user1"/>
         <FIELD NAME="user1" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="apid" NEXT="user2"/>
         <FIELD NAME="user2" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="user1" NEXT="judger"/>
-        <FIELD NAME="judger" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="moss" SEQUENCE="false" ENUM="true" ENUMVALUES="'moss', 'duplication'" PREVIOUS="user2" NEXT="rank"/>
-        <FIELD NAME="rank" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="judger" NEXT="info"/>
+        <FIELD NAME="judger" TYPE="char" LENGTH="50" NOTNULL="true" DEFAULT="moss" SEQUENCE="false" ENUM="true" ENUMVALUES="'moss', 'duplication'" PREVIOUS="user2" NEXT="extnames"/>
+        <FIELD NAME="extnames" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="judger" NEXT="rank"/>
+        <FIELD NAME="rank" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="extnames" NEXT="info"/>
         <FIELD NAME="info" TYPE="text" LENGTH="small" NOTNULL="false" SEQUENCE="false" ENUM="false" PREVIOUS="rank" NEXT="confirmed"/>
-        <FIELD NAME="confirmed" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="info"/>
+        <FIELD NAME="confirmed" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" PREVIOUS="info" NEXT="judgedate"/>
+        <FIELD NAME="judgedate" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" ENUM="false" PREVIOUS="confirmed"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="anti_id" UNIQUE="false" FIELDS="apid"/>
+        <INDEX NAME="anti_id" UNIQUE="false" FIELDS="apid" NEXT="rank_index"/>
+        <INDEX NAME="rank_index" UNIQUE="false" FIELDS="rank" PREVIOUS="anti_id"/>
       </INDEXES>
     </TABLE>
   </TABLES>

@@ -54,10 +54,7 @@ class block_anti_plagiarism extends block_list {
         // This prevents your block from recalculating its content more than once before the page
         // is displayed to the user. Unless you KNOW that there is a VERY SPECIFIC reason not to do
         // that, accept the speed improvement and DO NOT TOUCH the next three lines.
-        $course = get_record('course', 'id', $this->instance->pageid);
-        
-        if (!isteacher($course->id))
-           return null;
+
         if($this->content !== NULL) {
             return $this->content;
         }
@@ -73,11 +70,11 @@ class block_anti_plagiarism extends block_list {
         // IF your block is of type BLOCK_TYPE_LIST, you create two arrays instead. Since this particular
         // example is of BLOCK_TYPE_TEXT, the next lines are commented:
 
+
         $this->content->items = array(); // this is the text for each item
         $this->content->icons = array(); // this is the icon for each item
 
-        // Now we are going to add one item (example copied from the "admin" block)
-        if (! $assignments = get_all_instances_in_course("assignment", $course)) {
+        if (! $assignments = get_all_instances_in_course("assignment", $this->course)) {
             $this->content->footer = get_string('noassignments', 'assignment');
         }
         else {
@@ -86,12 +83,14 @@ class block_anti_plagiarism extends block_list {
 //                    continue;
 //                }
 
-                if (!$assignment->visible) {
-                    //Show dimmed if the mod is hidden
-                    $this->content->items[] = "<a class=\"dimmed\" href=\"../blocks/moss/moss.php?id=$assignment->coursemodule\">".format_string($assignment->name,true)."</a>";
-                } else {
+                if ($assignment->visible) {
                     //Show normal if the mod is visible
-                    $this->content->items[] = "<a href=\"../blocks/moss/moss.php?id=$assignment->coursemodule\">".format_string($assignment->name,true)."</a>";
+                    $this->content->icons[] = '<img src="'.$CFG->modpixpath.'/assignment/icon.gif"></img>';
+                    $this->content->items[] = '<a href="'.$CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$assignment->id.'&block='.$this->instance->id.'">'.format_string($assignment->name,true).'</a>';
+                } else {
+                    //Show dimmed if the mod is hidden
+                    $this->content->icons[] = '<img src="'.$CFG->modpixpath.'/assignment/icon.gif"></img>';
+                    $this->content->items[] = '<a class ="dimmed" href="'.$CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$assignment->id.'&block='.$this->instance->id.'">'.format_string($assignment->name,true).'</a>';
                 }   
             }
         }

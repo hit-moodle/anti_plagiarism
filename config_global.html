@@ -20,6 +20,15 @@
     </td>
 </tr>
 <tr>
+    <td align="right"><p>block_antipla_unrar_path:</td>
+    <td>
+    <input name="block_antipla_unrar_path" type="text" value="<?php if(!empty($CFG->block_antipla_unrar_path)) {echo $CFG->block_antipla_unrar_path;}?>" />
+    </td>
+    <td>
+    <?php print_string('unrarpath','block_anti_plagiarism');?>    
+    </td>
+</tr>
+<tr>
     <td colspan="3" align="center">
 	<input type="submit" value="<?php print_string("savechanges") ?>"></td>
 </tr>
