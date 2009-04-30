@@ -196,8 +196,8 @@ function judge($config) {
         print_string('done', 'block_anti_plagiarism');
     }
 
-    //delete_dir_contents($submission_path);
-    //rmdir($submission_path);
+    delete_dir_contents($submission_path);
+    rmdir($submission_path);
 
     print_box_end();
     print_continue($CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$id.'&block='.$block.'&action=view');
@@ -315,16 +315,6 @@ function duplication_parse($output) {
     return $results;
 }
 
-function getextname($filename) {
-    $filename = strtolower($filename) ;
-    $exts = explode('.', $filename) ;
-    $n = count($exts);
-    if ($n == 1)
-        return '';
-    else
-        return $exts[$n-1];
-}
-
 function extract_to_temp($source) {
     global $id, $CFG;
 
@@ -337,21 +327,28 @@ function extract_to_temp($source) {
 
     if ($files = get_directory_list($source)) {
         foreach ($files as $key => $file) {
-            $dir = $temp_dir.'/'.dirname($file);
+            $dir = $temp_dir.dirname($file);
             if (!check_dir_exists($dir, true, true)) {
                 error("Can't mkdir ".$dir);
             }
 
-            $ext = getextname($file);
+            $path_parts = pathinfo(cleardoubleslashes($file));
+            $ext= $path_parts["extension"];    //The extension of the file
 
             if ($ext === 'rar' && !empty($CFG->block_antipla_unrar_path)) {
-                $command = $CFG->block_antipla_unrar_path.' e '.$source.'/'.$file.' '.$temp_dir.dirname($file).' >/dev/null';
+                $command = $CFG->block_antipla_unrar_path.' e '.$source.$file.' '.$temp_dir.dirname($file).'/ >/dev/null';
                 system($command);
-
             } else if ($ext === 'zip') {
-                unzip_file($source.'/'.$file, $temp_dir.dirname($file), false);
+                unzip_file($source.$file, $temp_dir.dirname($file), false);
+                //Move all files to its home root
+                $basedir = $temp_dir.dirname($file).'/';
+                if ($fs = get_directory_list($basedir)) {
+                    foreach ($fs as $k => $f) {
+                        rename($basedir.$f, $basedir.basename($f));
+                    }
+                }
             } else {
-                if (!copy($source.'/'.$file, $temp_dir.$file))
+                if (!copy($source.$file, $temp_dir.$file))
                     error('Can\'t copy file');
             }
         }
