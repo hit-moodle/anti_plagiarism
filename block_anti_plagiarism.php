@@ -103,9 +103,8 @@ class block_anti_plagiarism extends block_list {
 
         // If you like, you can specify a "footer" text that will be printed at the bottom of your block.
         // If you don't want a footer, set this variable to an empty string. DO NOT delete the line entirely!
-        if (empty($this->content->footer)) {
-            $this->content->footer = '<a href="http://theory.stanford.edu/~aiken/moss/" target="_blank">'.get_string('resulttitle', 'block_anti_plagiarism').'</a>';
-        }
+        //$this->content->footer = '<a href="http://theory.stanford.edu/~aiken/moss/" target="_blank">'.get_string('resulttitle', 'block_anti_plagiarism').'</a>';
+
         // And that's all! :)
         return $this->content;
     }
