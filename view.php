@@ -26,28 +26,24 @@ print_header($pagetitle, $course->fullname, $navigation, "", "", true, '', navme
 
 $context = get_context_instance(CONTEXT_BLOCK, $block);
 
-$viewall = has_capability('block/anti_plagiarism:viewall', $context);
-if (!$viewall)
+$canviewall = has_capability('block/anti_plagiarism:viewall', $context);
+if (!$canviewall)
     require_capability('block/anti_plagiarism:viewself', $context);
+$canjudge = has_capability('block/anti_plagiarism:judge', $context);
 
 $antipla = get_record('block_anti_plagiarism', 'assignment', $id);
-$inactive = null;
-if (empty($antipla)) {
-    $action = 'config';
-    $inactive[] = 'view';
-}
 
 $viewurl = 'view.php?id='.$id.'&block='.$block.'&action=view';
 $configurl = 'view.php?id='.$id.'&block='.$block.'&action=config';
 
 $row[] = new tabobject('view', $viewurl, get_string('view'));
-if (has_capability('block/anti_plagiarism:judge', $context)) 
+if ($canjudge) 
     $row[] = new tabobject('config', $configurl, get_string('judge', 'block_anti_plagiarism'));
 $tabs[] = $row;
 
 /// Print out the tabs
 print "\n".'<div class="tabs">'."\n";
-print_tabs($tabs, $action, $inactive);
+print_tabs($tabs, $action);
 print '</div>';
 
 if ($action === 'config') {
@@ -81,6 +77,12 @@ if ($action === 'config') {
         $mform->display();
     }
 } else { //View
+    if (empty($antipla)) {
+        if ($canjudge)
+            notice(get_string('noresults', 'block_anti_plagiarism'), $CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$id.'&block='.$block.'&action=config');
+        else
+            notice(get_string('noresultsandwait', 'block_anti_plagiarism'));
+    }
     
     $pairid = optional_param('pairid', '-1', PARAM_INT);
     if ($pairid != -1) {
@@ -91,7 +93,7 @@ if ($action === 'config') {
         update_record('block_anti_plagiarism_pairs', $new);
     }
 
-    if ($viewall)
+    if ($canviewall)
         $results = get_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'rank');
     else {
         $select = "apid=$antipla->id AND (user1=$USER->id OR user2=$USER->id) AND confirmed=1";
@@ -99,7 +101,10 @@ if ($action === 'config') {
     }
 
     if (!$results) {
-        notice(get_string('noresults', 'block_anti_plagiarism'), $CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$id.'&block='.$block.'&action=config');
+        if ($canjudge)
+            notice(get_string('noresults', 'block_anti_plagiarism'), $CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$id.'&block='.$block.'&action=config');
+        else
+            notice(get_string('noresultsandwait', 'block_anti_plagiarism'));
     }
 
     $confirm = has_capability('block/anti_plagiarism:confirm', $context);

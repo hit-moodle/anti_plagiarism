@@ -29,6 +29,7 @@ $string['mossscriptpath'] = 'Local path of the <a href=http://theory.stanford.ed
 $string['noassignments'] = 'No assignments to be measured';
 $string['noplagiarism'] = 'No record about you';
 $string['noresults'] = 'No judgement results. Please judge first.';
+$string['noresultsandwait'] = 'No judgement results now. Please wait.';
 $string['prepareing'] = 'Prepareing files...';
 $string['parsing'] = 'Parsing results...';
 $string['rank'] = 'Similarity Rank';
