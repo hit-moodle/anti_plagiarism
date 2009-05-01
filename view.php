@@ -120,9 +120,13 @@ if ($action === 'config') {
     $table->data[] = $column_name;
 
     foreach($results as $result) {
+
+        if (!$confirm && $result->confirmed == 0) //Don't show unconfirmed record to people hasn't confirm cap.
+            continue;
+
         $column = array();
 
-        if ($confirm && $result->confirmed) {
+        if ($result->confirmed) {
             $grade_button1 = link_to_popup_window('/mod/assignment/submissions.php?a='.$id.'&amp;userid='.$result->user1.'&amp;mode=single&amp;offset=1', 
                 'grade'.$result->user1, 
                 '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />', 
