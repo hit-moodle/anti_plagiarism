@@ -1,5 +1,9 @@
 <?PHP // $Id$ 
 
+$string['anti_plagiarism:confirm'] = 'Confirm plagiarism manually';
+$string['anti_plagiarism:judge'] = 'Launch judger';
+$string['anti_plagiarism:viewall'] = 'View all plagiarism records';
+$string['anti_plagiarism:viewself'] = 'View own plagiarism records';
 $string['blockname'] = 'Anti-Plagiarism';
 $string['confirmmessage'] = 'Are you sure this is plagiarism?';
 $string['confirmtooltip'] = 'Confirm this plagiarism';
@@ -16,16 +20,19 @@ $string['extnames'] = 'Extension';
 $string['failed'] = 'Unsuccessfully run the external judger!';
 $string['judge'] = 'Judge';
 $string['judging'] = 'Judging...';
+$string['hasplagiarism'] = 'You have $a records';
 $string['info'] = 'Information';
 $string['moss'] = 'Moss (for source code and ascii)';
 $string['mossinfo'] = '<a href=\"{$a->url}\">User 1({$a->user1_percent}%%) and User 2({$a->user2_percent}%%) have {$a->line_count} matching lines</a>'; 
 $string['mossoptions'] = 'Moss Options';
 $string['mossscriptpath'] = 'Local path of the <a href=http://theory.stanford.edu/~aiken/moss/>moss</a> submission script.';
 $string['noassignments'] = 'No assignments to be measured';
+$string['noplagiarism'] = 'No record about you';
 $string['noresults'] = 'No judgement results. Please judge first.';
 $string['prepareing'] = 'Prepareing files...';
 $string['parsing'] = 'Parsing results...';
 $string['rank'] = 'Similarity Rank';
 $string['unconfirm'] = 'Unconfirm';
 $string['unconfirmtooltip'] = 'This is NOT plagiarism';
+$string['unrarpath'] = 'Local path of unrar.';
 ?>
