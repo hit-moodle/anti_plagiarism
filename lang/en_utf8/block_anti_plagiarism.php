@@ -28,7 +28,7 @@ $string['mossoptions'] = 'Moss Options';
 $string['mossscriptpath'] = 'Local path of the <a href=http://theory.stanford.edu/~aiken/moss/>moss</a> submission script.';
 $string['noassignments'] = 'No assignments to be measured';
 $string['noplagiarism'] = 'No record about you';
-$string['noresults'] = 'No judgement results. Please judge first.';
+$string['noresults'] = 'No judgement results. That means no plagiarism or the assignment is unjudged.';
 $string['noresultsandwait'] = 'No judgement results now. Please wait.';
 $string['prepareing'] = 'Prepareing files...';
 $string['parsing'] = 'Parsing results...';
