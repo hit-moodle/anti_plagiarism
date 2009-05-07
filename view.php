@@ -316,7 +316,7 @@ function duplication_parse($output) {
     $results = array();
 
     $rank = 1;
-    $re = '/^([0-9\.]+) .*\/'.$antipla->assignment.'\/(\d+)\/.*\/119\/(\d+)\//';
+    $re = '/^([0-9\.]+) .*\/'.$antipla->assignment.'\/(\d+)\/.*\/'.$antipla->assignment.'\/(\d+)\//';
     foreach ($output as $line) {
         if (preg_match($re, $line, $matches)) {
             $result = new stdClass();
