@@ -1,7 +1,8 @@
 <?php
 
-require_once("../../config.php");
-require_once("../../backup/lib.php"); //for delete_dir_contents
+require_once('../../config.php');
+require_once('../../backup/lib.php'); //for delete_dir_contents()
+require_once('../../lib/filelib.php'); // for get_file_url()
     
 $id = required_param('id', PARAM_INT);          // Assignment ID
 $block = required_param('block', PARAM_INT);    // Block ID
@@ -215,6 +216,8 @@ function judge($config) {
             insert_record('block_anti_plagiarism_pairs', $result);
         }
         print_string('done', 'block_anti_plagiarism');
+        echo '<br />';
+        print_string('numberofplagiarism', 'block_anti_plagiarism', count($results));
     }
 
     delete_dir_contents($submission_path);
@@ -316,24 +319,48 @@ function duplication_parse($output) {
     $results = array();
 
     $rank = 1;
-    $re = '/^([0-9\.]+) .*\/'.$antipla->assignment.'\/(\d+)\/.*\/'.$antipla->assignment.'\/(\d+)\//';
+    $re = '/^(?<similarity>[0-9\.]+) .*\/(?<assignment1>\d+)\/(?<user1>\d+)\/(?<filename1>[^\/]+)<-->.*\/(?<assignment2>\d+)\/(?<user2>\d+)\/(?<filename2>[^\/]+)/';
     foreach ($output as $line) {
         if (preg_match($re, $line, $matches)) {
+
+            // Ignore plagiarism between the same user
+            if ($matches['user1'] === $matches['user2'])
+                continue;
+
             $result = new stdClass();
-            $result->user1 = $matches[2];
-            $result->user2 = $matches[3];
+            $result->user1 = $matches['user1'];
+            $result->user2 = $matches['user2'];
             $result->apid = $antipla->id;
             $result->rank = $rank++;
             $result->judger = 'duplication';
             $result->extnames = $antipla->extnames;
             $result->judgedate = time();
-            $result->info = get_string('duplicationinfo', 'block_anti_plagiarism', $matches[1]);
+
+            //Make info
+            $info = new object();
+            $info->filename1 = $matches['filename1'];
+            $info->filename2 = $matches['filename2'];
+            $info->url1 = fileurl($matches['assignment1'], $matches['user1'], $matches['filename1']);
+            $info->url2 = fileurl($matches['assignment2'], $matches['user2'], $matches['filename2']);
+            $info->similarity = $matches['similarity'];
+            
+            $result->info = get_string('duplicationinfo', 'block_anti_plagiarism', $info);
 
             $results[] = $result;
         }
     }
 
     return $results;
+}
+
+function fileurl($assignment, $user, $filename) {
+    global $antipla, $course, $CFG;
+
+    if ($assignment === $antipla->assignment) {
+        return get_file_url("$course->id/moddata/assignment/$assignment/$user/$filename", array('forcedownload'=>1));
+    } else {
+        return "$CFG->wwwroot/blocks/anti_plagiarism/others_file.php?a=$assignment&u=$user&f=$filename";
+    }
 }
 
 function extract_to_temp($source) {
