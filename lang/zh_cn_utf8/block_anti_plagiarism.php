@@ -14,7 +14,7 @@ $string['describesensitivity'] = '灵敏度：';
 $string['describetype'] = '选择编程语言：';
 $string['done'] = '完成。';
 $string['duplication'] = 'Duplication (处理中文doc和pdf文档)';
-$string['duplicationinfo'] = '<a href=\"$a->url1\">$a->filename1</a>和<a href=\"$a->url1\">$a->filename1</a>的相似度是{$a->similarity}';
+$string['duplicationinfo'] = '<a href=\"$a->url1\">$a->filename1</a>和<a href=\"$a->url2\">$a->filename2</a>的相似度是{$a->similarity}';
 $string['duplicationpath'] = 'Duplication的本地路径。';
 $string['extnames'] = '扩展名';
 $string['failed'] = '外部程序运行失败！';
