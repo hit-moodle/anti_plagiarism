@@ -201,6 +201,9 @@ function judge($config) {
     flush();
     exec($command.' 2>&1', $output, $return);
 
+    if (debugging('', DEBUG_DEVELOPER)) 
+        print_object($output);
+
     if ($return) { //Error
         delete_dir_contents($submission_path);
         rmdir($submission_path);
@@ -220,8 +223,10 @@ function judge($config) {
         print_string('numberofplagiarism', 'block_anti_plagiarism', count($results));
     }
 
-    delete_dir_contents($submission_path);
-    rmdir($submission_path);
+    if (!debugging('', DEBUG_DEVELOPER)) {
+        delete_dir_contents($submission_path);
+        rmdir($submission_path);
+    }
 
     print_box_end();
     print_continue($CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$id.'&block='.$block.'&action=view');
@@ -306,7 +311,7 @@ function duplication_command($config, $path) {
 
     if (isset($CFG->block_antipla_duplication_path) and !empty($CFG->block_antipla_duplication_path)) {
         
-        return $CFG->block_antipla_duplication_path.' '.$path.' '.$path.'duplication.out';
+        return $CFG->block_antipla_duplication_path.' '.$path.' '.$path.'duplication.out '.$CFG->locale;
 
     } else {
         return null;
