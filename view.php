@@ -94,9 +94,37 @@ if ($action === 'config') {
         update_record('block_anti_plagiarism_pairs', $new);
     }
 
-    if ($canviewall)
-        $results = get_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'rank');
-    else {
+    if ($canviewall) {
+        $relevant = optional_param('relevant', '-1', PARAM_INT);
+        if ($relevant != -1) {
+            $seed = get_record('block_anti_plagiarism_pairs', 'id', $relevant);
+
+            $select = "apid=$antipla->id AND (user1=$seed->user1 OR user2=$seed->user1)";
+            $results = get_records_select('block_anti_plagiarism_pairs', $select);
+            $members1 = array();
+            foreach ($results as $row) {
+                $members1[] = $row->user1;
+                $members1[] = $row->user2;
+            }
+
+            $select = "apid=$antipla->id AND (user1=$seed->user2 OR user2=$seed->user2)";
+            $results = get_records_select('block_anti_plagiarism_pairs', $select);
+            $members2 = array();
+            foreach ($results as $row) {
+                $members2[] = $row->user1;
+                $members2[] = $row->user2;
+            }
+
+            $members = array_unique(array_intersect($members1, $members2));
+
+            $member_str = implode(',', $members);
+
+            $select = "apid=$antipla->id AND user1 IN ($member_str) AND user2 IN ($member_str)";
+            $results = get_records_select('block_anti_plagiarism_pairs', $select, 'rank');
+        } else {
+            $results = get_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'rank');
+        }
+    } else {
         $select = "apid=$antipla->id AND (user1=$USER->id OR user2=$USER->id) AND confirmed=1";
         $results = get_records_select('block_anti_plagiarism_pairs', $select, 'rank');
     }
@@ -121,7 +149,7 @@ if ($action === 'config') {
     $column_name[] = get_string('extnames', 'block_anti_plagiarism');
     $column_name[] = get_string('info', 'block_anti_plagiarism');
     if ($confirm)
-        $column_name[] = get_string('confirm');
+        $column_name[] = get_string('action');
 
     $table->data[] = $column_name;
 
@@ -168,9 +196,25 @@ if ($action === 'config') {
         $column[] = $result->info;
 
         if ($confirm) {
-            $column[] = print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php',
-                                            array('id' => $id, 'block' => $block, 'pairid' => $result->id, 'confirmed' => !$result->confirmed),
-                                            $label, 'post', '_self', true, $tooltip, false, $jsconfirmmessage);
+            //confirm button
+            $args = array('id' => $id, 'block' => $block, 'pairid' => $result->id, 'confirmed' => !$result->confirmed);
+            if ($relevant != -1)
+                $args['relevant'] = $relevant;
+            $cell = print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php', $args, $label, 'post', '_self', true, $tooltip, false, $jsconfirmmessage);
+
+            //relevant button
+            $args = array('id' => $id, 'block' => $block);
+            if ($relevant == $result->id) {
+                $label = get_string('showall', 'block_anti_plagiarism');
+                $tooltip = get_string('showalltooltip', 'block_anti_plagiarism');
+            } else {
+                $label = get_string('showrelevantonly', 'block_anti_plagiarism');
+                $tooltip = get_string('showrelevanttooltip', 'block_anti_plagiarism');
+                $args['relevant'] = $result->id;
+            }
+
+            $cell .= print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php', $args, $label, 'post', '_self', true, $tooltip, false);
+            $column[] = $cell;
         }
 
         $table->data[] = $column;
