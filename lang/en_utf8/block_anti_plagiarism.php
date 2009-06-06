@@ -27,7 +27,7 @@ $string['mossinfo'] = '<a href=\"{$a->url}\">User 1({$a->user1_percent}%%) and U
 $string['mossoptions'] = 'Moss Options';
 $string['mossscriptpath'] = 'Local path of the <a href=http://theory.stanford.edu/~aiken/moss/>moss</a> submission script.';
 $string['noassignments'] = 'No assignments to be measured';
-$string['noplagiarism'] = 'No records about you';
+$string['noplagiarism'] = 'All assignments are under monitor. No records related with you';
 $string['noresults'] = 'No judgement results. That means no plagiarism or the assignment is unjudged.';
 $string['noresultsandwait'] = 'No judgement results now. Please wait.';
 $string['numberofplagiarism'] = 'Found $a suspected plagiarism records.';
