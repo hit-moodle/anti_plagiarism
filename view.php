@@ -3,6 +3,7 @@
 require_once('../../config.php');
 require_once('../../backup/lib.php'); //for delete_dir_contents()
 require_once('../../lib/filelib.php'); // for get_file_url()
+require_once('../../lib/adminlib.php'); // for print_progress()
     
 $id = required_param('id', PARAM_INT);          // Assignment ID
 $block = required_param('block', PARAM_INT);    // Block ID
@@ -235,6 +236,8 @@ function judge($config) {
     $submission_path = extract_to_temp($CFG->dataroot.'/'.$course->id.'/'.$CFG->moddata.'/assignment/'.$id.'/');
 
     $command = eval('return '.$config->judger.'_command($config, $submission_path);');
+    if (debugging('', DEBUG_DEVELOPER)) 
+        print_object($command);
 
     $output = array();
     $return = null;
@@ -243,19 +246,29 @@ function judge($config) {
     echo '<br />';
     print_string('judging', 'block_anti_plagiarism');
     flush();
-    exec($command.' 2>&1', $output, $return);
+
+    $descriptorspec = array(
+        0 => array('pipe', 'r'),  // stdin 
+        1 => array('pipe', 'w'),  // stdout
+        2 => array('pipe', 'w') // stderr
+    );
+    $proc = proc_open($command, $descriptorspec, $pipes);
+    if (!is_resource($proc)) {
+        delete_dir_contents($submission_path);
+        rmdir($submission_path);
+        error(get_string('failed', 'block_anti_plagiarism'));
+    }
+
+    //Wait for the process to finish.
+    $output = eval('return '.$config->judger.'_waiting($pipes[1], $pipes[2]);');
+    $return = proc_close($proc);
 
     if (debugging('', DEBUG_DEVELOPER)) 
         print_object($output);
 
     if ($return) { //Error
-        delete_dir_contents($submission_path);
-        rmdir($submission_path);
-
-        error(get_string('failed', 'block_anti_plagiarism').'<br />'.implode('<br />', $output));
+        error(get_string('failed', 'block_anti_plagiarism'));
     } else {
-        print_string('done', 'block_anti_plagiarism');
-        echo '<br />';
         print_string('parsing', 'block_anti_plagiarism');
         flush();
         $results = eval('return '.$config->judger.'_parse($output);');
@@ -299,8 +312,40 @@ function moss_command($config, $path) {
     }
 }
 
+/*
+* Waiting for the finishment, show progress and return output
+ */
+function moss_waiting($stdout, $stderr) {
+    $outputs = array();
+    $done = 0;
+    print_progress($done, 3);
+    while (!feof($stdout)) {
+        $line = rtrim(fgets($stdout));
+        $outputs[] = $line;
+        if ($line == 'OK') {
+            $done++;
+            print_progress($done, 3);
+        } else if ($line == 'Query submitted.  Waiting for the server\'s response.') {
+            $done++;
+            print_progress($done, 3);
+        }
+    }
+    $done++;
+    print_progress($done, 3);
+
+    while (!feof($stderr)) {
+        $outputs[] = rtrim(fgets($stderr));
+    }
+
+    return $outputs;
+}
+
 function moss_parse($output) {
     global $antipla;
+
+    // Skip two empty lines
+    array_pop($output);
+    array_pop($output);
 
     $url = array_pop($output);
     $fp = fopen($url, 'r');
