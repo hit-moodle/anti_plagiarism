@@ -313,7 +313,7 @@ function moss_command($config, $path) {
 }
 
 /*
-* Waiting for the finishment, show progress and return output
+ * Waiting for the finishment, show progress and return output
  */
 function moss_waiting($stdout, $stderr) {
     $outputs = array();
@@ -405,6 +405,23 @@ function duplication_command($config, $path) {
     } else {
         return null;
     }
+}
+
+/*
+ * Waiting for the finishment, show progress and return output
+ */
+function duplication_waiting($stdout, $stderr) {
+    $outputs = array();
+    while (!feof($stdout)) {
+        $line = rtrim(fgets($stdout));
+        $outputs[] = $line;
+    }
+
+    while (!feof($stderr)) {
+        $outputs[] = rtrim(fgets($stderr));
+    }
+
+    return $outputs;
 }
 
 function duplication_parse($output) {
