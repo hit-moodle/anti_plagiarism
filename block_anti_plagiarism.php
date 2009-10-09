@@ -97,6 +97,21 @@ class block_anti_plagiarism extends block_list {
         }
         return true;
     }
+
+    function instance_delete() {
+        // Clean db
+        $assignments = get_all_instances_in_course("assignment", $this->course);
+        foreach ($assignments as $assignment) {
+            $antipla = get_record('block_anti_plagiarism', 'assignment', $assignment->id);
+            if ($antipla) {
+                delete_records('block_anti_plagiarism_pairs', 'apid', $antipla->id);
+                delete_records('block_anti_plagiarism', 'id', $antipla->id);
+            }
+        }
+
+        return true;
+    }
 }
+
 
 ?>
