@@ -495,7 +495,7 @@ function extract_to_temp($source) {
             $ext= $path_parts["extension"];    //The extension of the file
 
             if ($ext === 'rar' && !empty($CFG->block_antipla_unrar_path)) {
-                $command = $CFG->block_antipla_unrar_path.' e '.$source.$file.' '.$temp_dir.dirname($file).'/ >/dev/null';
+                $command = "export LC_ALL=zh_CN.UTF-8 ; $CFG->block_antipla_unrar_path e $source$file $temp_dir".dirname($file).'/ >/dev/null';
                 system($command);
             } else if ($ext === 'zip') {
                 unzip_file($source.$file, $temp_dir.dirname($file), false);
