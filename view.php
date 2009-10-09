@@ -244,8 +244,6 @@ function judge($config) {
 
     print_string('done', 'block_anti_plagiarism');
     echo '<br />';
-    print_string('judging', 'block_anti_plagiarism');
-    flush();
 
     $descriptorspec = array(
         0 => array('pipe', 'r'),  // stdin 
@@ -262,6 +260,8 @@ function judge($config) {
     //Wait for the process to finish.
     $output = eval('return '.$config->judger.'_waiting($pipes[1], $pipes[2]);');
     $return = proc_close($proc);
+    print_string('done', 'block_anti_plagiarism');
+    echo '<br />';
 
     if (debugging('', DEBUG_DEVELOPER)) 
         print_object($output);
@@ -269,8 +269,6 @@ function judge($config) {
     if ($return) { //Error
         error(get_string('failed', 'block_anti_plagiarism'));
     } else {
-        print_string('parsing', 'block_anti_plagiarism');
-        flush();
         $results = eval('return '.$config->judger.'_parse($output);');
         foreach($results as $result) {
             insert_record('block_anti_plagiarism_pairs', $result);
@@ -318,20 +316,19 @@ function moss_command($config, $path) {
 function moss_waiting($stdout, $stderr) {
     $outputs = array();
     $done = 0;
-    print_progress($done, 3);
+    print_string('mosscheckfiles', 'block_anti_plagiarism');
+    flush();
     while (!feof($stdout)) {
         $line = rtrim(fgets($stdout));
         $outputs[] = $line;
         if ($line == 'OK') {
-            $done++;
-            print_progress($done, 3);
+            print_string('mossuploadfiles', 'block_anti_plagiarism');
+            flush();
         } else if ($line == 'Query submitted.  Waiting for the server\'s response.') {
-            $done++;
-            print_progress($done, 3);
+            print_string('mossjudge', 'block_anti_plagiarism');
+            flush();
         }
     }
-    $done++;
-    print_progress($done, 3);
 
     while (!feof($stderr)) {
         $outputs[] = rtrim(fgets($stderr));
@@ -342,6 +339,9 @@ function moss_waiting($stdout, $stderr) {
 
 function moss_parse($output) {
     global $antipla;
+
+    print_string('mossdownloadresults', 'block_anti_plagiarism');
+    flush();
 
     // Skip two empty lines
     array_pop($output);
