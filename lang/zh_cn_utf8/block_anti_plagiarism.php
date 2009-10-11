@@ -31,7 +31,7 @@ $string['mossoptions'] = 'Moss选项';
 $string['mossscriptpath'] = '<a href=http://theory.stanford.edu/~aiken/moss/>moss</a>提交脚本的本地路径。';
 $string['mossuploadfiles'] = '提交文件...';
 $string['noassignments'] = '没有可被评判的作业';
-$string['noplagiarism'] = '所有作业都在监视中。目前没有与您有关的抄袭记录';
+$string['noplagiarism'] = '反抄袭系统正在监视所有作业。目前没有与您有关的抄袭记录';
 $string['noresults'] = '没有评判结果。这意味着没有抄袭或者此作业还没有被评判。';
 $string['noresultsandwait'] = '没有评判结果。请等待。';
 $string['numberofplagiarism'] = '共发现{$a}条疑似抄袭。';
