@@ -1,7 +1,7 @@
 <?php
 
 require_once('../../config.php');
-require_once('../../lib/filelib.php'); // for get_file_url()
+require_once('../../lib/filelib.php'); // for get_file_url() and fulldelete()
 require_once('../../lib/adminlib.php'); // for print_progress()
     
 $id = required_param('id', PARAM_INT);          // Assignment ID
