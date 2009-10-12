@@ -1,7 +1,6 @@
 <?php
 
 require_once('../../config.php');
-require_once('../../backup/lib.php'); //for delete_dir_contents()
 require_once('../../lib/filelib.php'); // for get_file_url()
 require_once('../../lib/adminlib.php'); // for print_progress()
     
@@ -279,8 +278,7 @@ function judge($config) {
     }
 
     if (!debugging('', DEBUG_DEVELOPER)) {
-        delete_dir_contents($submission_path);
-        rmdir($submission_path);
+        fulldelete($submission_path);
     }
 
     print_box_end();
@@ -479,7 +477,7 @@ function extract_to_temp($source) {
 
     // Make temp dir
     $temp_dir = $CFG->dataroot.'/temp/anti_plagiarism/'.$id.'/';
-    delete_dir_contents($temp_dir);
+    fulldelete($temp_dir);
     if (!check_dir_exists($temp_dir, true, true)) {
         error("Can't mkdir ".$temp_dir);
     }
