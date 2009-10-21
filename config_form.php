@@ -42,7 +42,13 @@ class anti_plagiarism_config_form extends moodleform {
         $mform->setType('sensitivity', PARAM_INT);
         $mform->setDefault('sensitivity', '10');
         $mform->disabledIf('sensitivity', 'judger', 'eq', 'duplication');
+        $mform->setHelpButton('sensitivity', array('sensitivity', get_string('describesensitivity', 'block_anti_plagiarism'), 'block_anti_plagiarism'));
         
+        $mform->addElement('choosecoursefile', 'basefile', get_string('basefile', 'block_anti_plagiarism'), null, array('maxlength' => 255, 'size' => 48));
+        $mform->addGroupRule('basefile', array('value' => array(array(get_string('maximumchars', '', 255), 'maxlength', 255, 'client'))));
+        $mform->disabledIf('basefile', 'judger', 'eq', 'duplication');
+        $mform->setHelpButton('basefile', array('basefile', get_string('describebasefile', 'block_anti_plagiarism'), 'block_anti_plagiarism'));
+
         $mform->closeHeaderBefore('cleanall');
 
         $mform->addElement('checkbox', 'cleanall', get_string('describecleanall', 'block_anti_plagiarism'));

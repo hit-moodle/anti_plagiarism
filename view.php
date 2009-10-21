@@ -56,6 +56,7 @@ if ($action === 'config') {
 
     if ($fromform=$mform->get_data()){
         $fromform->assignment = $id;
+        $fromform->instance = $block;
         if (empty($antipla))
             insert_record('block_anti_plagiarism', $fromform);
         else {
@@ -286,7 +287,7 @@ function judge($config) {
 }
 
 function moss_command($config, $path) {
-    global $CFG;
+    global $CFG, $course;
 
     if (isset($CFG->block_antipla_moss_script_path) and !empty($CFG->block_antipla_moss_script_path)) {
         $basepath = $path.'*/*';
@@ -299,10 +300,14 @@ function moss_command($config, $path) {
         }
         $path = implode(' ', $path_args);
         
-        return $CFG->block_antipla_moss_script_path
+        $cmd = $CFG->block_antipla_moss_script_path
             .' -l '.$config->type
-            .' -m '.$config->sensitivity
-            .' -d '.$path;
+            .' -m '.$config->sensitivity;
+        if (!empty($config->basefile))
+            $cmd .= " -b $CFG->dataroot/$course->id/$config->basefile";
+        $cmd .= " -d $path";
+
+        return $cmd;
     } else {
         return null;
     }
