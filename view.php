@@ -509,6 +509,16 @@ function extract_to_temp($source) {
                         rename($basedir.$f, $basedir.basename($f));
                     }
                 }
+            } else if ($ext === 'gz') {
+                $command = "tar zxf $source$file -C $temp_dir".dirname($file);
+                system($command);
+                //Move all files to its home root
+                $basedir = $temp_dir.dirname($file).'/';
+                if ($fs = get_directory_list($basedir)) {
+                    foreach ($fs as $k => $f) {
+                        rename($basedir.$f, $basedir.basename($f));
+                    }
+                }
             } else {
                 if (!copy($source.$file, $temp_dir.$file))
                     error('Can\'t copy file');
