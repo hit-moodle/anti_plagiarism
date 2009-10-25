@@ -64,7 +64,7 @@ if ($action === 'config') {
             update_record('block_anti_plagiarism', $fromform);
 
             if (isset($fromform->cleanall)) {
-                delete_records('block_anti_plagiarism_pairs', 'apid', $antipla->id);
+                delete_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'confirmed', 0);
             }
         }
 
