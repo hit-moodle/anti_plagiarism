@@ -102,6 +102,10 @@ if ($action === 'config') {
         $mform->display();
     }
 } else { //View
+    $group = groups_get_course_group($course);
+    groups_print_course_menu($course, "view.php?id=$id&block=$block");
+    echo '<div class="clearer"></div>';
+
     if (empty($antipla)) {
         if ($canjudge)
             notice(get_string('noresults', 'block_anti_plagiarism'), $CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$id.'&block='.$block.'&action=config');
@@ -146,7 +150,18 @@ if ($action === 'config') {
             $select = "apid=$antipla->id AND user1 IN ($member_str) AND user2 IN ($member_str)";
             $results = get_records_select('block_anti_plagiarism_pairs', $select, 'rank');
         } else {
-            $results = get_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'rank');
+            if ($group != 0) {
+                if ($users = groups_get_members($group, 'u.id', 'u.id')) {
+                    $users = array_keys($users);
+                    $userids = implode(',',$users);
+                    $where = 'apid ='.$antipla->id.' AND (user1 IN ('.$userids.') OR user2 IN ('.$userids.'))';
+                    $results = get_records_select('block_anti_plagiarism_pairs', $where, 'rank');
+                } else {
+                    $results = false;
+                }
+            } else {
+                $results = get_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'rank');
+            }
         }
     } else {
         $select = "apid=$antipla->id AND (user1=$USER->id OR user2=$USER->id) AND confirmed=1";
