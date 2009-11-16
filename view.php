@@ -330,7 +330,7 @@ function moss_command($config, $path) {
     if (isset($CFG->block_antipla_moss_script_path) and !empty($CFG->block_antipla_moss_script_path)) {
         $basepath = $path.'*/*';
         $path_args = array();
-        $extnames = explode(' ', $config->extnames);
+        $extnames = explode(' ', trim($config->extnames));
         if (!$extnames)
             return false;
         foreach($extnames as $extname) {
