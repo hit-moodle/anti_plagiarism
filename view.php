@@ -58,9 +58,12 @@ $canjudge = has_capability('block/anti_plagiarism:judge', $context);
 $antipla = get_record('block_anti_plagiarism', 'assignment', $id);
 
 $viewurl = 'view.php?id='.$id.'&block='.$block.'&action=view';
+$confirmedurl = 'view.php?id='.$id.'&block='.$block.'&action=confirmed';
 $configurl = 'view.php?id='.$id.'&block='.$block.'&action=config';
 
 $row[] = new tabobject('view', $viewurl, get_string('view'));
+if ($canviewall) 
+    $row[] = new tabobject('confirmed', $confirmedurl, get_string('confirmed', 'block_anti_plagiarism'));
 if ($canjudge) 
     $row[] = new tabobject('config', $configurl, get_string('judge', 'block_anti_plagiarism'));
 $tabs[] = $row;
@@ -101,7 +104,7 @@ if ($action === 'config') {
         $mform->set_data($antipla);
         $mform->display();
     }
-} else { //View
+} else { //View or view confirmed only
     if (empty($antipla)) {
         if ($canjudge)
             notice(get_string('noresults', 'block_anti_plagiarism'), $CFG->wwwroot.'/blocks/anti_plagiarism/view.php?id='.$id.'&block='.$block.'&action=config');
@@ -146,24 +149,25 @@ if ($action === 'config') {
             $select = "apid=$antipla->id AND user1 IN ($member_str) AND user2 IN ($member_str)";
             $results = get_records_select('block_anti_plagiarism_pairs', $select, 'rank');
         } else {
-            groups_print_course_menu($course, "view.php?id=$id&block=$block");
+            groups_print_course_menu($course, "view.php?id=$id&block=$block&action=$action");
             $group = groups_get_course_group($course);
             echo '<div class="clearer"></div>';
 
+            $where = "apid = $antipla->id";
             if ($group != 0) {
                 if ($users = groups_get_members($group, 'u.id', 'u.id')) {
                     $users = array_keys($users);
                     $userids = implode(',',$users);
-                    $where = 'apid ='.$antipla->id.' AND (user1 IN ('.$userids.') OR user2 IN ('.$userids.'))';
-                    $results = get_records_select('block_anti_plagiarism_pairs', $where, 'rank');
+                    $where .= ' AND (user1 IN ('.$userids.') OR user2 IN ('.$userids.'))';
                 } else {
                     $results = false;
                 }
-            } else {
-                $results = get_records('block_anti_plagiarism_pairs', 'apid', $antipla->id, 'rank');
             }
+            $where .= ($action === 'confirmed') ? ' AND confirmed=1' : '';
+            if (!isset($results))
+                $results = get_records_select('block_anti_plagiarism_pairs', $where, 'rank');
         }
-    } else {
+    } else { //viewself
         $select = "apid=$antipla->id AND (user1=$USER->id OR user2=$USER->id) AND confirmed=1";
         $results = get_records_select('block_anti_plagiarism_pairs', $select, 'rank');
     }

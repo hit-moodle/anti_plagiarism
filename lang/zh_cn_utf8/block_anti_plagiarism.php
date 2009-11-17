@@ -6,6 +6,7 @@ $string['anti_plagiarism:viewall'] = '查看所有抄袭记录';
 $string['anti_plagiarism:viewself'] = '查看自己的抄袭记录';
 $string['basefile'] = '框架文件';
 $string['blockname'] = '反抄袭';
+$string['confirmed'] = '已确认';
 $string['confirmmessage'] = '您确定一定以及肯定这是抄袭吗？';
 $string['confirmtooltip'] = '确认这是抄袭';
 $string['connecterror'] = '无法访问 $a';
@@ -33,7 +34,7 @@ $string['mossscriptpath'] = '<a href=http://theory.stanford.edu/~aiken/moss/>mos
 $string['mossuploadfiles'] = '提交文件...';
 $string['noassignments'] = '没有可被评判的作业';
 $string['noplagiarism'] = '反抄袭系统正在监视所有作业。目前没有与您有关的抄袭记录';
-$string['noresults'] = '没有评判结果。这意味着没有抄袭或者此作业还没有被评判。';
+$string['noresults'] = '没有符合条件的结果。这意味着没有抄袭或者此作业还没有被评判。';
 $string['noresultsandwait'] = '没有评判结果。请等待。';
 $string['numberofplagiarism'] = '共发现{$a}条疑似抄袭。';
 $string['prepareing'] = '准备文件...';

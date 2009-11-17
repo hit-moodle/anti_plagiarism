@@ -6,6 +6,7 @@ $string['anti_plagiarism:viewall'] = 'View all plagiarism records';
 $string['anti_plagiarism:viewself'] = 'View own plagiarism records';
 $string['basefile'] = 'Base file';
 $string['blockname'] = 'Anti-Plagiarism';
+$string['confirmed'] = 'Confirmed';
 $string['confirmmessage'] = 'Are you sure this is plagiarism?';
 $string['confirmtooltip'] = 'Confirm this plagiarism';
 $string['connecterror'] = 'Can\'t access $a';
@@ -33,7 +34,7 @@ $string['mossscriptpath'] = 'Local path of the <a href=http://theory.stanford.ed
 $string['mossuploadfiles'] = 'Upload files...';
 $string['noassignments'] = 'No assignments to be measured';
 $string['noplagiarism'] = 'Anti-plagiarism is watching all assignments. No records related with you';
-$string['noresults'] = 'No judgement results. That means no plagiarism or the assignment is unjudged.';
+$string['noresults'] = 'No related results. That means no plagiarism or the assignment is unjudged.';
 $string['noresultsandwait'] = 'No judgement results now. Please wait.';
 $string['numberofplagiarism'] = 'Found $a suspected plagiarism records.';
 $string['prepareing'] = 'Prepareing files...';
