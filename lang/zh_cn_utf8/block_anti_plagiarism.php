@@ -33,7 +33,7 @@ $string['mossdownloadresults'] = '下载结果...';
 $string['mossinfo'] = '<a href=\"{$a->url}\">用户1({$a->user1_percent}%%)和用户2({$a->user2_percent}%%)有{$a->line_count}行雷同</a>'; 
 $string['mossjudge'] = '评判...';
 $string['mossoptions'] = 'Moss选项';
-$string['mossscriptpath'] = '<a href=http://theory.stanford.edu/~aiken/moss/>moss</a>提交脚本的本地路径。';
+$string['mossscriptpath'] = 'moss提交脚本的本地路径。';
 $string['mossuploadfiles'] = '提交文件...';
 $string['noassignments'] = '没有可被评判的作业';
 $string['noplagiarism'] = '反抄袭系统正在监视所有作业。目前没有与您有关的抄袭记录';
