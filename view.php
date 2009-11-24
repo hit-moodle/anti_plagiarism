@@ -54,6 +54,11 @@ $canviewall = has_capability('block/anti_plagiarism:viewall', $context);
 if (!$canviewall)
     require_capability('block/anti_plagiarism:viewself', $context);
 $canjudge = has_capability('block/anti_plagiarism:judge', $context);
+$canconfirm = has_capability('block/anti_plagiarism:confirm', $context);
+
+$assignment_cm = get_coursemodule_from_instance('assignment', $assignment->id);
+$context = get_context_instance(CONTEXT_MODULE, $assignment_cm->id);
+$cangrade = has_capability('mod/assignment:grade', $context); 
 
 $antipla = get_record('block_anti_plagiarism', 'assignment', $id);
 
@@ -179,8 +184,6 @@ if ($action === 'config') {
             notice(get_string('noresultsandwait', 'block_anti_plagiarism'));
     }
 
-    $confirm = has_capability('block/anti_plagiarism:confirm', $context);
-
     $table = new Object();
     $table->class = 'flexible antipla';
     $table->id = 'results';
@@ -188,42 +191,45 @@ if ($action === 'config') {
     $column_name = array();
     $column_name[] = get_string('fullname').'1';
     $column_name[] = get_string('fullname').'2';
-    $column_name[] = get_string('rank', 'block_anti_plagiarism');
-    $column_name[] = get_string('extnames', 'block_anti_plagiarism');
-    $column_name[] = get_string('info', 'block_anti_plagiarism');
-    if ($confirm)
+    if ($canconfirm) {
+        $column_name[] = get_string('rank', 'block_anti_plagiarism');
+        $column_name[] = get_string('extnames', 'block_anti_plagiarism');
+        $column_name[] = get_string('info', 'block_anti_plagiarism');
         $column_name[] = get_string('action');
+    }
 
     $table->data[] = $column_name;
 
     foreach($results as $result) {
 
-        if (!$confirm && $result->confirmed == 0) //Don't show unconfirmed record to people hasn't confirm cap.
+        if (!$canconfirm && $result->confirmed == 0) //Don't show unconfirmed record to people hasn't confirm cap.
             continue;
 
         $column = array();
 
+        $grade_button1 = '';
+        $grade_button2 = '';
         if ($result->confirmed) {
-            $grade_button1 = link_to_popup_window('/mod/assignment/submissions.php?a='.$id.'&amp;userid='.$result->user1.'&amp;mode=single&amp;offset=1', 
-                'grade'.$result->user1, 
-                '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />', 
-                500, 700,
-                get_string('grade'),
-                'none',
-                true);
-            $grade_button2 = link_to_popup_window('/mod/assignment/submissions.php?a='.$id.'&amp;userid='.$result->user2.'&amp;mode=single&amp;offset=1', 
-                'grade'.$result->user2, 
-                '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />', 
-                500, 700,
-                get_string('grade'),
-                'none',
-                true);
+            if ($cangrade) {
+                $grade_button1 = link_to_popup_window('/mod/assignment/submissions.php?a='.$id.'&amp;userid='.$result->user1.'&amp;mode=single&amp;offset=1', 
+                    'grade'.$result->user1, 
+                    '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />', 
+                    500, 700,
+                    get_string('grade'),
+                    'none',
+                    true);
+                $grade_button2 = link_to_popup_window('/mod/assignment/submissions.php?a='.$id.'&amp;userid='.$result->user2.'&amp;mode=single&amp;offset=1', 
+                    'grade'.$result->user2, 
+                    '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />', 
+                    500, 700,
+                    get_string('grade'),
+                    'none',
+                    true);
+            }
             $label = get_string('unconfirm', 'block_anti_plagiarism');
             $jsconfirmmessage = '';
             $tooltip = get_string('unconfirmtooltip', 'block_anti_plagiarism');
         } else {
-            $grade_button1 = '';
-            $grade_button2 = '';
             $label = get_string('confirm');
             $jsconfirmmessage = get_string('confirmmessage', 'block_anti_plagiarism');
             $tooltip = get_string('confirmtooltip', 'block_anti_plagiarism');
@@ -234,11 +240,11 @@ if ($action === 'config') {
         $user = get_record('user', 'id', $result->user2);
         $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '">' . fullname($user) . '</a>'.$grade_button2;
 
-        $column[] = $result->rank;
-        $column[] = $result->judger === 'moss' ? $result->extnames : '.doc .pdf';
-        $column[] = $result->info;
+        if ($canconfirm) {
+            $column[] = $result->rank;
+            $column[] = $result->judger === 'moss' ? $result->extnames : '.doc .pdf';
+            $column[] = $result->info;
 
-        if ($confirm) {
             //confirm button
             $args = array('id' => $id, 'block' => $block, 'pairid' => $result->id, 'confirmed' => !$result->confirmed);
             if ($relevant != -1)
