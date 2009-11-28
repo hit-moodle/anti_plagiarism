@@ -344,11 +344,11 @@ function moss_command($config, $path) {
         if (!$extnames)
             return false;
         foreach($extnames as $extname) {
-            $path_args[] = $basepath.$extname;
+            $path_args[] = addcslashes($basepath.$extname, ' ');
         }
         $path = implode(' ', $path_args);
         
-        $cmd = $CFG->block_antipla_moss_script_path
+        $cmd = addcslashes($CFG->block_antipla_moss_script_path, ' ')
             .' -l '.$config->type
             .' -m '.$config->sensitivity;
         if (!empty($config->basefile))
@@ -449,9 +449,10 @@ function moss_parse($output) {
 function duplication_command($config, $path) {
     global $CFG;
 
+    $path = addcslashes($path, ' ');
     if (isset($CFG->block_antipla_duplication_path) and !empty($CFG->block_antipla_duplication_path)) {
         
-        return $CFG->block_antipla_duplication_path.' '.$path.' '.$path.'duplication.out '.$CFG->locale;
+        return addcslashes($CFG->block_antipla_duplication_path, ' ').' '.$path.' '.$path.'duplication.out '.$CFG->locale;
 
     } else {
         return null;
