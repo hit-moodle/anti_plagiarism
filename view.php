@@ -348,7 +348,7 @@ function moss_command($config, $path) {
         }
         $path = implode(' ', $path_args);
         
-        $cmd = addcslashes($CFG->block_antipla_moss_script_path, ' ')
+        $cmd = '"'.$CFG->block_antipla_moss_script_path.'"'
             .' -l '.$config->type
             .' -m '.$config->sensitivity;
         if (!empty($config->basefile))
@@ -452,7 +452,7 @@ function duplication_command($config, $path) {
     $path = addcslashes($path, ' ');
     if (isset($CFG->block_antipla_duplication_path) and !empty($CFG->block_antipla_duplication_path)) {
         
-        return addcslashes($CFG->block_antipla_duplication_path, ' ').' '.$path.' '.$path.'duplication.out '.$CFG->locale;
+        return '"'.$CFG->block_antipla_duplication_path.'" '.$path.' '.$path.'duplication.out '.$CFG->locale;
 
     } else {
         return null;
