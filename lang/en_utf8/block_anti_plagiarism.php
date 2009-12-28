@@ -20,7 +20,7 @@ $string['describetype'] = 'Choose programming language';
 $string['describeunrar'] = 'The plugin can unrar submission files automaticly. If you don\'t need this feature, leave the field blank.';
 $string['done'] = 'done.';
 $string['duplication'] = 'Duplication (for doc and pdf in Chinese)';
-$string['duplicationinfo'] = 'Similarity of <a href=\"$a->url1\">$a->filename1</a> and <a href=\"$a->url1\">$a->filename1</a> is $a->similarity';
+$string['duplicationinfo'] = 'Similarity of <a href=\"$a->url1\">$a->filename1</a> and <a href=\"$a->url2\">$a->filename2</a> is $a->similarity';
 $string['duplicationpath'] = 'Local path of the Duplication.';
 $string['extnames'] = 'Extension';
 $string['failed'] = 'Unsuccessfully run the external judger!';

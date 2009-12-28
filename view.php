@@ -292,6 +292,7 @@ function judge($config) {
 
     print_string('done', 'block_anti_plagiarism');
     echo '<br />';
+    flush();
 
     $descriptorspec = array(
         0 => array('pipe', 'r'),  // stdin 
@@ -463,6 +464,8 @@ function duplication_command($config, $path) {
  * Waiting for the finishment, show progress and return output
  */
 function duplication_waiting($stdout, $stderr) {
+    print_string('mosscheckfiles', 'block_anti_plagiarism');
+    flush();
     $outputs = array();
     while (!feof($stdout)) {
         $line = rtrim(fgets($stdout));
