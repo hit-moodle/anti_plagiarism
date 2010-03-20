@@ -4,6 +4,7 @@ $string['anti_plagiarism:confirm'] = '手工确认抄袭';
 $string['anti_plagiarism:judge'] = '运行评判器';
 $string['anti_plagiarism:viewall'] = '查看所有抄袭记录';
 $string['anti_plagiarism:viewself'] = '查看自己的抄袭记录';
+$string['badmossresult'] = 'MOSS没有返回正确结果。请联系管理员解决此问题。';
 $string['basefile'] = '框架文件';
 $string['blockname'] = '反抄袭';
 $string['confirmed'] = '已确认';

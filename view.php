@@ -372,7 +372,8 @@ function moss_waiting($stdout, $stderr) {
     flush();
     while (!feof($stdout)) {
         $line = rtrim(fgets($stdout));
-        $outputs[] = $line;
+        if (!empty($line))
+            $outputs[] = $line;
         if ($line == 'OK') {
             print_string('mossuploadfiles', 'block_anti_plagiarism');
             flush();
@@ -382,8 +383,11 @@ function moss_waiting($stdout, $stderr) {
         }
     }
 
-    while (!feof($stderr)) {
-        $outputs[] = rtrim(fgets($stderr));
+    // Show stderr for debugging
+    if (debugging('', DEBUG_DEVELOPER)) {
+        while (!feof($stderr)) {
+            echo fgets($stderr) . '<br />';
+        }
     }
 
     return $outputs;
@@ -395,11 +399,13 @@ function moss_parse($output) {
     print_string('mossdownloadresults', 'block_anti_plagiarism');
     flush();
 
-    // Skip two empty lines
-    array_pop($output);
-    array_pop($output);
-
+    //Get and check result url
     $url = array_pop($output);
+    $pos = strpos($url, 'http://');
+    if ($pos === false || $pos != 0) {
+        error(get_string('badmossresult', 'block_anti_plagiarism'));
+    }
+
     $fp = fopen($url, 'r');
     if (!$fp) {
         error(get_string('connecterror', 'block_anti_plagiarism', $url));

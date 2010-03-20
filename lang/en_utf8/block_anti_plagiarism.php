@@ -4,6 +4,7 @@ $string['anti_plagiarism:confirm'] = 'Confirm plagiarism manually';
 $string['anti_plagiarism:judge'] = 'Launch judger';
 $string['anti_plagiarism:viewall'] = 'View all plagiarism records';
 $string['anti_plagiarism:viewself'] = 'View own plagiarism records';
+$string['badmossresult'] = 'MOSS does not return a correct result. Ask the administrator for help.';
 $string['basefile'] = 'Base file';
 $string['blockname'] = 'Anti-Plagiarism';
 $string['confirmed'] = 'Confirmed';
