@@ -198,7 +198,7 @@ if ($action === 'config') {
         $column_name[] = get_string('action');
     }
 
-    $table->data[] = $column_name;
+    $table->head = $column_name;
 
     foreach($results as $result) {
 
