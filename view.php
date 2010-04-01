@@ -187,6 +187,7 @@ if ($action === 'config') {
     $table = new Object();
     $table->class = 'flexible antipla';
     $table->id = 'results';
+    $table->width = '95%';
 
     $column_name = array();
     $column_name[] = get_string('fullname').'1';
@@ -249,7 +250,7 @@ if ($action === 'config') {
             $args = array('id' => $id, 'block' => $block, 'pairid' => $result->id, 'confirmed' => !$result->confirmed);
             if ($relevant != -1)
                 $args['relevant'] = $relevant;
-            $cell = print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php', $args, $label, 'post', '_self', true, $tooltip, false, $jsconfirmmessage);
+            $confirm_btn = print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php', $args, $label, 'post', '_self', true, $tooltip, false, $jsconfirmmessage);
 
             //relevant button
             $args = array('id' => $id, 'block' => $block);
@@ -261,8 +262,10 @@ if ($action === 'config') {
                 $tooltip = get_string('showrelevanttooltip', 'block_anti_plagiarism');
                 $args['relevant'] = $result->id;
             }
+            $relevant_btn = print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php', $args, $label, 'post', '_self', true, $tooltip, false);
 
-            $cell .= print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php', $args, $label, 'post', '_self', true, $tooltip, false);
+            //Put the two button into a minor table so that they appear in one row
+            $cell = "<table><tr><td>$confirm_btn</td><td>$relevant_btn</td></tr></table>";
             $column[] = $cell;
         }
 
