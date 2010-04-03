@@ -118,7 +118,7 @@ if ($action === 'config') {
     }
     
     $pairid = optional_param('pairid', '-1', PARAM_INT);
-    if ($pairid != -1) {
+    if ($pairid != -1 && confirm_sesskey()) {
         require_capability('block/anti_plagiarism:confirm', $context);
         $new = new Object();
         $new->confirmed = required_param('confirmed', PARAM_INT);
@@ -247,13 +247,13 @@ if ($action === 'config') {
             $column[] = $result->info;
 
             //confirm button
-            $args = array('id' => $id, 'block' => $block, 'pairid' => $result->id, 'confirmed' => !$result->confirmed);
+            $args = array('id' => $id, 'block' => $block, 'pairid' => $result->id, 'confirmed' => !$result->confirmed, 'sesskey' => sesskey());
             if ($relevant != -1)
                 $args['relevant'] = $relevant;
             $confirm_btn = print_single_button($CFG->wwwroot.'/blocks/anti_plagiarism/view.php', $args, $label, 'post', '_self', true, $tooltip, false, $jsconfirmmessage);
 
             //relevant button
-            $args = array('id' => $id, 'block' => $block);
+            $args = array('id' => $id, 'block' => $block, 'sesskey' => sesskey());
             if ($relevant == $result->id) {
                 $label = get_string('showall', 'block_anti_plagiarism');
                 $tooltip = get_string('showalltooltip', 'block_anti_plagiarism');
