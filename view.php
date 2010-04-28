@@ -196,7 +196,7 @@ if ($action === 'config') {
         $column_name[] = get_string('rank', 'block_anti_plagiarism');
         $column_name[] = get_string('extnames', 'block_anti_plagiarism');
         $column_name[] = get_string('info', 'block_anti_plagiarism');
-        $column_name[] = get_string('action');
+        $column_name[] = get_string('action').helpbutton('action', get_string('action'), 'block_anti_plagiarism', true, false, '', true);
     }
 
     $table->head = $column_name;
