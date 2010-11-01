@@ -26,6 +26,7 @@
 require_once('../../config.php');
 require_once('../../lib/filelib.php'); // for get_file_url() and fulldelete()
 require_once('../../lib/adminlib.php'); // for print_progress()
+require_once('../../lib/gradelib.php'); // for grade_get_grades()
     
 $id = required_param('id', PARAM_INT);          // Assignment ID
 $block = required_param('block', PARAM_INT);    // Block ID
@@ -211,17 +212,33 @@ if ($action === 'config') {
         $grade_button1 = '';
         $grade_button2 = '';
         if ($result->confirmed) {
+            $grade_items = grade_get_grades($course->id, 'mod', 'assignment', $id, $result->user1)->items;
+            if (!empty($grade_items)) {
+                $finalgrade1 = $grade_items[0]->grades[$result->user1]->grade;
+                if (empty($finalgrade1))
+                    $finalgrade1 = '-';
+                else
+                    $finalgrade1 = round($finalgrade1);
+            }
+            $grade_items = grade_get_grades($course->id, 'mod', 'assignment', $id, $result->user2)->items;
+            if (!empty($grade_items)) {
+                $finalgrade2 = $grade_items[0]->grades[$result->user2]->grade;
+                if (empty($finalgrade2))
+                    $finalgrade2 = '-';
+                else
+                    $finalgrade2 = round($finalgrade2);
+            }
             if ($cangrade) {
                 $grade_button1 = link_to_popup_window('/mod/assignment/submissions.php?a='.$id.'&amp;userid='.$result->user1.'&amp;mode=single&amp;offset=1', 
                     'grade'.$result->user1, 
-                    '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />', 
+                    '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />('.$finalgrade1.')', 
                     500, 700,
                     get_string('grade'),
                     'none',
                     true);
                 $grade_button2 = link_to_popup_window('/mod/assignment/submissions.php?a='.$id.'&amp;userid='.$result->user2.'&amp;mode=single&amp;offset=1', 
                     'grade'.$result->user2, 
-                    '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />', 
+                    '<img src="'.$CFG->pixpath.'/i/grades.gif" border="0" alt="'.get_string('grade').'" />('.$finalgrade2.')', 
                     500, 700,
                     get_string('grade'),
                     'none',
@@ -237,9 +254,9 @@ if ($action === 'config') {
         }
 
         $user = get_record('user', 'id', $result->user1);
-        $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '">' . fullname($user) . '</a>'.$grade_button1;
+        $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '">' . fullname($user) . '</a> '.$grade_button1;
         $user = get_record('user', 'id', $result->user2);
-        $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '">' . fullname($user) . '</a>'.$grade_button2;
+        $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '">' . fullname($user) . '</a> '.$grade_button2;
 
         if ($canconfirm) {
             $column[] = $result->rank;
