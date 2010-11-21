@@ -254,9 +254,11 @@ if ($action === 'config') {
         }
 
         $user = get_record('user', 'id', $result->user1);
-        $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '">' . fullname($user) . '</a> '.$grade_button1;
+        $submit_time = get_field('assignment_submissions', 'timemodified', 'userid', $user->id, 'assignment', $id);
+        $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '" title="'.get_string('lastmodified').': '.userdate($submit_time).'">' . fullname($user) . '</a> '.$grade_button1;
         $user = get_record('user', 'id', $result->user2);
-        $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '">' . fullname($user) . '</a> '.$grade_button2;
+        $submit_time = get_field('assignment_submissions', 'timemodified', 'userid', $user->id, 'assignment', $id);
+        $column[] = '<a href="' . $CFG->wwwroot . '/user/view.php?id=' . $user->id . '&amp;course=' . $course->id . '" title="'.get_string('lastmodified').': '.userdate($submit_time).'">' . fullname($user) . '</a> '.$grade_button2;
 
         if ($canconfirm) {
             $column[] = $result->rank;
